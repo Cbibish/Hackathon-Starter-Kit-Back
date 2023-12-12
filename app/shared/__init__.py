@@ -31,6 +31,9 @@ def create_app(config):
     from data.hello_world.controllers import hello_world_blueprint
     app.register_blueprint(hello_world_blueprint, url_prefix=url_prefix)
 
+    from data.votes.controllers import votes_blueprint
+    app.register_blueprint(votes_blueprint, url_prefix="/votes")
+
     @app.errorhandler(ValidationError)
     def handle_custom_error(error):
         return str(error), 400

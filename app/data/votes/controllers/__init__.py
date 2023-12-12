@@ -1,0 +1,1 @@
+from .votes_controller import votes_blueprint
