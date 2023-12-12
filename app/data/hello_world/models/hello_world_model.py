@@ -12,3 +12,4 @@ class HelloWorldModel(db.Model):
         nullable=False
     )
     message = Column(String(100))
+

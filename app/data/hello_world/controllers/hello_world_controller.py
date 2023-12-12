@@ -15,6 +15,8 @@ hello_world_blueprint = Blueprint(f"{NAME}_hello_world_blueprint", __name__)
 @hello_world_blueprint.get(f"/hello_world/<int:id>")
 def get_hello_world(id: str):
     """GET route code goes here"""
+    test = HelloWorldModel(id=1, message="This is a test!")
+    db.session.add(test)
     entity: HelloWorldModel = db.session.query(HelloWorldModel).get(id)
     if entity is None:
         return "Goodby, World.", 404
