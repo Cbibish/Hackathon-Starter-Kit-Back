@@ -22,10 +22,10 @@ def get_hello_world(id: str):
     entity: UserModel = db.session.query(UserModel).get(id)
     if entity is None:
         return "Goodby, World.", 404
-    return entity.message, 200
+    return entity.username, 200
 
 
-@user_blueprint.post(f"{NAME}/login")
+@user_blueprint.post(f"/login")
 def login():
     """POST route code goes here"""
     payload = request.get_json()
