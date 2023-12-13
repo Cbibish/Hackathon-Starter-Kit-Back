@@ -1,5 +1,9 @@
-""" Routes for the endpoint 'hello_world'"""
+#""" Routes for the endpoint 'hello_world'"""
 
+from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+
+from data.user.models.user_model import UserModel
 from flask import Blueprint, request
 from marshmallow import ValidationError
 
@@ -7,7 +11,7 @@ from data.user.models import UserModel
 from data.user.schemas import UserSchema
 from shared import db
 
-NAME = 'hello_world'
+NAME = 'user'
 
 user_blueprint = Blueprint(f"{NAME}_user_blueprint", __name__)
 
@@ -15,16 +19,14 @@ user_blueprint = Blueprint(f"{NAME}_user_blueprint", __name__)
 @user_blueprint.get(f"/user/<int:id>")
 def get_hello_world(id: str):
     """GET route code goes here"""
-    test = UserModel(id=1, message="This is a user test!")
-    db.session.add(test)
     entity: UserModel = db.session.query(UserModel).get(id)
     if entity is None:
         return "Goodby, World.", 404
     return entity.message, 200
 
 
-@user_blueprint.post(f"/user/")
-def post_hello_world():
+@user_blueprint.post(f"{NAME}/login")
+def login():
     """POST route code goes here"""
     payload = request.get_json()
     try:
@@ -35,20 +37,14 @@ def post_hello_world():
     db.session.commit()
     return UserSchema().dump(entity), 200
 
-
-@user_blueprint.delete(f"/user/<int:id>")
-def delete_hello_world(id: str):
-    """DELETE route code goes here"""
-    return "Unimplemented", 501
-
-
-@user_blueprint.put(f"/user/<int:id>")
-def put_hello_world(id: str):
-    """PUT route code goes here"""
-    return "Unimplemented", 501
-
-
-@user_blueprint.patch(f"/user/<int:id>")
-def patch_hello_world(id: str):
-    """PATCH route code goes here"""
-    return "Unimplemented", 501
+@user_blueprint.post(f"{NAME}/register")
+def register():
+    """POST route code goes here"""
+    payload = request.get_json()
+    try:
+        entity: UserModel = UserSchema().load(payload)
+    except ValidationError as error:
+        return f"The payload does't correspond to a valid UserModel: {error}", 400
+    db.session.add(entity)
+    db.session.commit()
+    return UserSchema().dump(entity), 200
