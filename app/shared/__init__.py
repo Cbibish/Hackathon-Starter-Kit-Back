@@ -37,6 +37,10 @@ def create_app(config):
     from data.user.controllers import user_blueprint
     app.register_blueprint(user_blueprint, url_prefix="/user")
 
+    from data.events.controllers import events_blueprint
+    app.register_blueprint(events_blueprint, url_prefix="/events")
+
+
     @app.errorhandler(ValidationError)
     def handle_custom_error(error):
         return str(error), 400
